@@ -9,7 +9,7 @@
 
 ## Creating Incident Reports
 
-Run `./gen-incident-reports.sh` to create an incident-reports directory.
+Run `uv run gen-incident-reports.py $(ocm token)` to create reports in incident-reports/.
 Each report will be named after its ID.
 
 ## OpenAI-Compatible API
@@ -21,4 +21,4 @@ If you are using ollama or another service, change the `OpenAIModel` configurati
 Depending on how much text was added to each of the events, the context length may need to be raised to accomodate.
 I run with 8096.
 
-Run `uv run main.py` to print the summaries for each report to standard out.
+Run `uv run gen-sumaries.py` to write the summaries for each incident to incident-summaries/.

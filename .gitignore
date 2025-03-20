@@ -11,4 +11,4 @@ wheels/
 
 # Generated files
 incident-reports/
-summaries*
+incident-summaries/

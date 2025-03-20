@@ -1013,6 +1013,7 @@ source = { virtual = "." }
 dependencies = [
     { name = "openai" },
     { name = "pydantic-ai" },
+    { name = "requests" },
 ]
 
 [package.dev-dependencies]
@@ -1025,6 +1026,7 @@ dev = [
 requires-dist = [
     { name = "openai", specifier = ">=1.66.3" },
     { name = "pydantic-ai", specifier = ">=0.0.41" },
+    { name = "requests", specifier = ">=2.32.3" },
 ]
 
 [package.metadata.requires-dev]
