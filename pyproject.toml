@@ -8,10 +8,12 @@ dependencies = [
     "openai>=1.66.3",
     "pydantic-ai>=0.0.41",
     "requests>=2.32.3",
+    "streamlit>=1.43.2",
 ]
 
 [dependency-groups]
 dev = [
     "python-lsp-server>=1.12.2",
     "ruff>=0.11.0",
+    "watchdog>=6.0.0",
 ]
