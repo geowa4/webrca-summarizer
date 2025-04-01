@@ -10,24 +10,22 @@ import requests
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-REPORT_DIR = Path("incident-reports")
 
-
-def gen_reports() -> None:
+def gen_reports(reports_dir: Path, ocm_token: str) -> None:
     incidents = [
         i
         for i in requests.get(
             "https://api.openshift.com/api/web-rca/v1/incidents?page=1&size=50&order_by=created_at%20desc&invalid=false",
             headers={
                 "Accept": "application/json",
-                "Authorization": f"Bearer {sys.argv[1]}",
+                "Authorization": f"Bearer {ocm_token}",
             },
         ).json()["items"]
-        if datetime.fromisoformat(i["updated_at"])
-        >= (datetime.now(timezone.utc) - timedelta(days=7))
+        if datetime.fromisoformat(i["created_at"])
+        >= (datetime.now(timezone.utc) - timedelta(days=10))
     ]
 
-    REPORT_DIR.mkdir(exist_ok=True)
+    reports_dir.mkdir(exist_ok=True)
 
     for incident in incidents:
         logger.info(incident["incident_id"])
@@ -36,11 +34,10 @@ def gen_reports() -> None:
             f"https://api.openshift.com/api/web-rca/v1/incidents/{incident['id']}/events?order_by=created_at%20desc",
             headers={
                 "Accept": "application/json",
-                "Authorization": f"Bearer {sys.argv[1]}",
+                "Authorization": f"Bearer {ocm_token}",
             },
         ).json()["items"]
-        if "00056" in incident["incident_id"]:
-            logger.info(events)
+
         # generate events text for first (most recent) events
         events_text = "\n".join([
             f"- [{e['occurred_at']} from {e['creator']['name']}]\n  {e['note'].replace('\n', '\n  ')}"
@@ -48,11 +45,9 @@ def gen_reports() -> None:
             if e["creator"]["id"] != "00000000-0000-0000-0000-000000000000"
             and e["note"] is not None
         ][:3])
-        if "00056" in incident["incident_id"]:
-            logger.info(events_text)
 
         # write report to a file
-        report = REPORT_DIR / f"{incident['incident_id']}.md"
+        report = reports_dir / f"{incident['incident_id']}.md"
 
         report_text = (
             f"# {incident['incident_id']}: {incident['summary']}\n"
@@ -80,4 +75,6 @@ def gen_reports() -> None:
 
 
 if __name__ == "__main__":
-    gen_reports()
+    from os import getenv
+    from .settings import REPORTS_DIR
+    gen_reports(REPORTS_DIR, getenv("OCM_TOKEN"))
