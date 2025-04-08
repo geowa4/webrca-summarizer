@@ -14,7 +14,7 @@ DESCRIPTION
 
 Events:
 
-[TIMESTAMP] LIST OF EVENTS"
+- [TIMESTAMP] LIST OF EVENTS
 
 When responding, reply with markdown using the following format.
 Ensure the Slack link is at the end.
