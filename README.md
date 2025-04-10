@@ -16,12 +16,16 @@ If you are using ollama or another service, change the `OpenAIModel` configurati
 Depending on how much text was added to each of the events, the context length may need to be raised to accomodate.
 I run with 8096.
 
+## Environment Variables
+
+
 ## Web Interface
 
 Run the report generation and create the summaries by launching the web interface.
 
 ```shell
-OCM_TOKEN=$(ocm token) uv run streamlit run Incident\ Report.py
+export OPENAI_API_KEY="lm-studio" OPENAI_BASE_URL="http://127.0.0.1:1234/v1" OCM_TOKEN=$(ocm token)
+uv run streamlit run Incident\ Report.py
 ```
 After running the two commands to generate the reports and summaries, view it in a browser with `uv run streamlit run ❗Incident\ Report.py`.
 

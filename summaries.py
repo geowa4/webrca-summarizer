@@ -16,7 +16,6 @@ agent = Agent(
     OpenAIModel(
         "gemma-3-27b-it",
         # "qwq-32b",
-        base_url="http://127.0.0.1:1234/v1",
     ),
     system_prompt=PROMPT_PATH.read_text(),
 )

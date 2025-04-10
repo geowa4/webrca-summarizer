@@ -3,7 +3,6 @@
 from datetime import datetime, timedelta, timezone
 import logging
 from pathlib import Path
-import sys
 
 import requests
 
@@ -43,7 +42,7 @@ def gen_reports(reports_dir: Path, ocm_token: str) -> None:
             f"- [{e['occurred_at']} from {e['creator']['name']}]\n  {e['note'].replace('\n', '\n  ')}"
             for e in events
             if e["creator"]["id"] != "00000000-0000-0000-0000-000000000000"
-            and e["note"] is not None
+            and e.get("note") is not None
         ][:3])
 
         # write report to a file
