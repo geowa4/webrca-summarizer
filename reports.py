@@ -3,11 +3,16 @@
 from datetime import datetime, timedelta, timezone
 import logging
 from pathlib import Path
+from itertools import chain
 
 import requests
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+
+def flatten(list_of_lists):
+    return list(chain.from_iterable(list_of_lists))
 
 
 def gen_reports(reports_dir: Path, ocm_token: str) -> None:
@@ -21,7 +26,7 @@ def gen_reports(reports_dir: Path, ocm_token: str) -> None:
             },
         ).json()["items"]
         if datetime.fromisoformat(i["created_at"])
-        >= (datetime.now(timezone.utc) - timedelta(days=10))
+        >= (datetime.now(timezone.utc) - timedelta(days=8))
     ]
 
     reports_dir.mkdir(exist_ok=True)
@@ -38,12 +43,13 @@ def gen_reports(reports_dir: Path, ocm_token: str) -> None:
         ).json()["items"]
 
         # generate events text for first (most recent) events
-        events_text = "\n".join([
+        events_list = [
             f"- [{e['occurred_at']} from {e['creator']['name']}]\n  {e['note'].replace('\n', '\n  ')}"
             for e in events
             if e["creator"]["id"] != "00000000-0000-0000-0000-000000000000"
             and e.get("note") is not None
-        ][:3])
+        ]
+        events_text = "\n".join(flatten([events_list[0:2], events_list[-3:]]))
 
         # write report to a file
         report = reports_dir / f"{incident['incident_id']}.md"
@@ -75,5 +81,5 @@ def gen_reports(reports_dir: Path, ocm_token: str) -> None:
 
 if __name__ == "__main__":
     from os import getenv
-    from .settings import REPORTS_DIR
+    from settings import REPORTS_DIR
     gen_reports(REPORTS_DIR, getenv("OCM_TOKEN"))
