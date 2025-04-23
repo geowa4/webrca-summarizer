@@ -65,20 +65,20 @@ def validate_summary(
     logger.info(
         f"Validating generated summary (attempt {ctx.deps.retry_count + 1}):\n{str(summary)}"
     )
-    editor_response = editor_agent.run_sync(str(summary))
+    editor_response = editor_agent.run_sync(summary.executive_summary)
     if not editor_response.output.is_acceptable:
         if ctx.deps.retry_count >= ctx.deps.max_retries:
             logger.warning(
                 f"Max retries ({ctx.deps.max_retries}) reached. Using last generated summary. "
-                f"Feedback: {editor_response.output.feedback}"
+                f"Feedback for the executive summary: {editor_response.output.feedback}"
             )
             return summary
         logger.warning(
-            f"Summary not acceptable. Feedback: {editor_response.output.feedback}"
+            f"Summary not acceptable. Feedback for the executive summary: {editor_response.output.feedback}"
         )
         ctx.deps.retry_count += 1
         raise ModelRetry(
-            f"Summary not acceptable. Feedback: {editor_response.output.feedback}"
+            f"Summary not acceptable. Feedback for the executive summary: {editor_response.output.feedback}"
         )
     
     logger.info("Summary validated successfully")
