@@ -18,17 +18,30 @@ I run with 8096.
 
 ## Environment Variables
 
-
-## Web Interface
-
-Run the report generation and create the summaries by launching the web interface.
+These variables must suit your environment.
+Examples are provided here for what I have most recently used.
 
 ```shell
 export OPENAI_API_KEY="lm-studio" OPENAI_BASE_URL="http://127.0.0.1:1234/v1" OCM_TOKEN=$(ocm token)
 export SUMMARIZATION_MODEL_NAME=mistral-small-3.1-24b-instruct-2503 EDITOR_MODEL_NAME=mistral-small-3.1-24b-instruct-2503
+```
+
+## Single Commands
+
+The reports and summaries can be generated easily in your shell.
+
+```shell
+uv run reports.py
+uv run summaries.py
+```
+
+## Web Interface
+
+If you wish to print to PDF or view the reports in your browser, launch the web interface with Streamlit.
+
+```shell
 uv run streamlit run Incident\ Report.py
 ```
-After running the two commands to generate the reports and summaries, view it in a browser with `uv run streamlit run ❗Incident\ Report.py`.
 
 ## Inspection
 
