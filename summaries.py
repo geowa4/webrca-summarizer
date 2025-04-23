@@ -3,7 +3,7 @@
 import logging
 import os
 from pathlib import Path
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from dataclasses import dataclass, field
 
 from pydantic_ai import Agent, ModelRetry, RunContext
@@ -29,7 +29,14 @@ class EditorResponse(BaseModel):
 
 
 class SummaryResponse(BaseModel):
-    content: str
+    products: list[str] = Field(description="The products affected by the incident.")
+    executive_summary: str = Field(description="The executive summary of the incident report.")
+    incident_id: str = Field(description="The incident ID of the incident report.")
+    slack_link: str = Field(description="The Slack link to the incident report.")
+
+    def __str__(self):
+        return f"**{self.products}**: {self.executive_summary} [{self.incident_id}]({self.slack_link})"
+
 
 
 editor_agent = Agent(
@@ -56,9 +63,9 @@ def validate_summary(
     ctx: RunContext[SummaryContext], summary: SummaryResponse
 ) -> SummaryResponse:
     logger.info(
-        f"Validating generated summary (attempt {ctx.deps.retry_count + 1}):\n{summary.content}"
+        f"Validating generated summary (attempt {ctx.deps.retry_count + 1}):\n{str(summary)}"
     )
-    editor_response = editor_agent.run_sync(summary.content)
+    editor_response = editor_agent.run_sync(str(summary))
     if not editor_response.output.is_acceptable:
         if ctx.deps.retry_count >= ctx.deps.max_retries:
             logger.warning(
@@ -104,7 +111,7 @@ def summarize_reports(report_dir: Path, summary_dir: Path) -> None:
             summary = summarization_agent.run_sync(content, deps=SummaryContext())
             logger.info("Summary generated successfully")
             
-            summary_path.write_text(summary.output.content)
+            summary_path.write_text(str(summary.output))
             logger.info(f"Summary written to {summary_path}")
             
         except Exception as e:
