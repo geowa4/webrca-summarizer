@@ -34,7 +34,7 @@ class SummaryResponse(BaseModel):
 
 editor_agent = Agent(
     OpenAIModel(
-        os.getenv("EDITOR_MODEL_NAME", "gemma-3-27b-it"),
+        os.getenv("EDITOR_MODEL_NAME", "mistral-small-3.1-24b-instruct-2503"),
     ),
     system_prompt=EDITOR_PROMPT_PATH.read_text(),
     output_type=EditorResponse,
@@ -42,7 +42,7 @@ editor_agent = Agent(
 
 summarization_agent = Agent(
     OpenAIModel(
-        os.getenv("SUMMARIZATION_MODEL_NAME", "gemma-3-27b-it"),
+        os.getenv("SUMMARIZATION_MODEL_NAME", "mistral-small-3.1-24b-instruct-2503"),
     ),
     retries=2,
     system_prompt=SUMMARIZATION_PROMPT_PATH.read_text(),

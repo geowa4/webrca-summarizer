@@ -25,6 +25,7 @@ Run the report generation and create the summaries by launching the web interfac
 
 ```shell
 export OPENAI_API_KEY="lm-studio" OPENAI_BASE_URL="http://127.0.0.1:1234/v1" OCM_TOKEN=$(ocm token)
+export SUMMARIZATION_MODEL_NAME=mistral-small-3.1-24b-instruct-2503 EDITOR_MODEL_NAME=mistral-small-3.1-24b-instruct-2503
 uv run streamlit run Incident\ Report.py
 ```
 After running the two commands to generate the reports and summaries, view it in a browser with `uv run streamlit run ❗Incident\ Report.py`.
